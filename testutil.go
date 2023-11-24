@@ -30,6 +30,7 @@ func body(t TestingT, handler http.Handler, req *http.Request) []byte {
 	return b
 }
 
+// MatchResponseStatusCode tests if http.Response returns with expected status code
 func MatchResponseStatusCode(t TestingT, handler http.Handler, req *http.Request, want int) {
 	res := result(t, handler, req)
 	if got := res.StatusCode; got != want {
@@ -37,12 +38,14 @@ func MatchResponseStatusCode(t TestingT, handler http.Handler, req *http.Request
 	}
 }
 
+// MatchResponseStatusCode tests if http.Response returns with expected body
 func MatchResponseBody(t TestingT, handler http.Handler, req *http.Request, want []byte) {
 	if got := body(t, handler, req); !bytes.Equal(got, want) {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
 }
 
+// MatchResponseStatusCode tests if http.Response returns with expected JSON
 func MatchResponseJSON(t TestingT, handler http.Handler, req *http.Request, want any) {
 	wantByte, err := json.Marshal(want)
 	if err != nil {
@@ -51,6 +54,7 @@ func MatchResponseJSON(t TestingT, handler http.Handler, req *http.Request, want
 	MatchResponseBody(t, handler, req, wantByte)
 }
 
+// ReadFile return bytes from file of the provided path
 func ReadFile(t TestingT, path string) []byte {
 	t.Helper()
 	b, err := os.ReadFile(path)
@@ -60,6 +64,7 @@ func ReadFile(t TestingT, path string) []byte {
 	return b
 }
 
+// TempWriter return io.WriteCloser backed a temp file
 func TempWriter(t TestingT, dir, pattern string) io.WriteCloser {
 	f, err := os.CreateTemp(dir, pattern)
 	if err != nil {
